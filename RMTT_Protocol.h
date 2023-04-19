@@ -15,7 +15,7 @@
 class RMTT_Protocol
 {
 private:
-    void SendCMD(char *cmd);
+    void nonblockSendTelloCtrlMsg(char *cmd);
 
 public:
     RMTT_Protocol();
@@ -63,5 +63,5 @@ public:
     String getTelloResponseString(uint32_t timeout);
     int    getTelloResponseInt(uint32_t timeout);
     void   startUntilControl();
-    int    sendTelloCtrlMsg(char *cmd_str);
+    String blockSendTelloCtrlMsg(char *cmd_str, uint32_t timeout);
 };
