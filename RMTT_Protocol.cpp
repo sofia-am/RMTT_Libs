@@ -21,187 +21,187 @@ RMTT_Protocol::~RMTT_Protocol()
 {
 }
 
-void RMTT_Protocol::SDKOn()
+void RMTT_Protocol::SDKOn(std::function<void(char *cmd, String res)> callback)
 {
-  nonblockSendTelloCtrlMsg((char *)"command");
+  sendCmd((char *)"command", callback);
 }
 
-void RMTT_Protocol::SDKOff()
+void RMTT_Protocol::SDKOff(std::function<void(char *cmd, String res)> callback)
 {
 }
 
-void RMTT_Protocol::TakeOff()
+void RMTT_Protocol::TakeOff(std::function<void(char *cmd, String res)> callback)
 {
-  nonblockSendTelloCtrlMsg((char *)"takeoff");
+  sendCmd((char *)"takeoff", callback);
 }
 
-void RMTT_Protocol::Land()
+void RMTT_Protocol::Land(std::function<void(char *cmd, String res)> callback)
 {
-  nonblockSendTelloCtrlMsg((char *)"land");
+  sendCmd((char *)"land", callback);
 }
 
-void RMTT_Protocol::Emergency()
+void RMTT_Protocol::Emergency(std::function<void(char *cmd, String res)> callback)
 {
-  nonblockSendTelloCtrlMsg((char *)"emergency");
+  sendCmd((char *)"emergency", callback);
 }
 
-void RMTT_Protocol::Up(int16_t x)
+void RMTT_Protocol::Up(int16_t x, std::function<void(char *cmd, String res)> callback)
 {
   char s[20] = {0};
   snprintf(s, sizeof(s), "up %d", x);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Down(int16_t x)
+void RMTT_Protocol::Down(int16_t x, std::function<void(char *cmd, String res)> callback)
 {
   char s[20] = {0};
   snprintf(s, sizeof(s), "down %d", x);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Left(int16_t x)
+void RMTT_Protocol::Left(int16_t x, std::function<void(char *cmd, String res)> callback)
 {
   char s[20] = {0};
   snprintf(s, sizeof(s), "left %d", x);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Right(int16_t x)
+void RMTT_Protocol::Right(int16_t x, std::function<void(char *cmd, String res)> callback)
 {
   char s[20] = {0};
   snprintf(s, sizeof(s), "right %d", x);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Forward(int16_t x)
+void RMTT_Protocol::Forward(int16_t x, std::function<void(char *cmd, String res)> callback)
 {
   char s[20] = {0};
   snprintf(s, sizeof(s), "forward %d", x);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Back(int16_t x)
+void RMTT_Protocol::Back(int16_t x, std::function<void(char *cmd, String res)> callback)
 {
   char s[20] = {0};
   snprintf(s, sizeof(s), "res %d", x);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::CW(uint16_t x)
+void RMTT_Protocol::CW(uint16_t x, std::function<void(char *cmd, String res)> callback)
 {
   char s[20] = {0};
   snprintf(s, sizeof(s), "cw %d", x);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::CCW(uint16_t x)
+void RMTT_Protocol::CCW(uint16_t x, std::function<void(char *cmd, String res)> callback)
 {
   char s[20] = {0};
   snprintf(s, sizeof(s), "ccw %d", x);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Flip(char x)
+void RMTT_Protocol::Flip(char x, std::function<void(char *cmd, String res)> callback)
 {
   char s[20] = {0};
   snprintf(s, sizeof(s), "flip %c", x);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Go(int16_t x, int16_t y, int16_t z, uint16_t speed)
+void RMTT_Protocol::Go(int16_t x, int16_t y, int16_t z, uint16_t speed, std::function<void(char *cmd, String res)> callback)
 {
   char s[40] = {0};
   snprintf(s, sizeof(s), "go %d %d %d %d", x, y, z, speed);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Go(int16_t x, int16_t y, int16_t z, uint16_t speed, char *mid)
+void RMTT_Protocol::Go(int16_t x, int16_t y, int16_t z, uint16_t speed, char *mid, std::function<void(char *cmd, String res)> callback)
 {
   char s[40] = {0};
   snprintf(s, sizeof(s), "go %d %d %d %d %s", x, y, z, speed, mid);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Stop()
+void RMTT_Protocol::Stop(std::function<void(char *cmd, String res)> callback)
 {
-  nonblockSendTelloCtrlMsg((char *)"stop");
+  sendCmd((char *)"stop", callback);
 }
 
-void RMTT_Protocol::Curve(int16_t x1, int16_t y1, int16_t z1, int16_t x2, int16_t y2, int16_t z2, uint16_t speed)
+void RMTT_Protocol::Curve(int16_t x1, int16_t y1, int16_t z1, int16_t x2, int16_t y2, int16_t z2, uint16_t speed, std::function<void(char *cmd, String res)> callback)
 {
   char s[60] = {0};
   snprintf(s, sizeof(s), "curve %d %d %d %d %d %d %d", x1, y1, z1, x2, y2, z2, speed);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Curve(int16_t x1, int16_t y1, int16_t z1, int16_t x2, int16_t y2, int16_t z2, uint16_t speed, char *mid)
+void RMTT_Protocol::Curve(int16_t x1, int16_t y1, int16_t z1, int16_t x2, int16_t y2, int16_t z2, uint16_t speed, char *mid, std::function<void(char *cmd, String res)> callback)
 {
   char s[60] = {0};
   snprintf(s, sizeof(s), "curve %d %d %d %d %d %d %d %s", x1, y1, z1, x2, y2, z2, speed, mid);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Jump(int16_t x, int16_t y, int16_t z, uint16_t speed, int16_t yaw, char *mid1, char *mid2)
+void RMTT_Protocol::Jump(int16_t x, int16_t y, int16_t z, uint16_t speed, int16_t yaw, char *mid1, char *mid2, std::function<void(char *cmd, String res)> callback)
 {
   char s[60] = {0};
   snprintf(s, sizeof(s), "jump %d %d %d %d %d %s %s", x, y, z, speed, yaw, mid1, mid2);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::SetSpeed(int16_t x)
+void RMTT_Protocol::SetSpeed(int16_t x, std::function<void(char *cmd, String res)> callback)
 {
   char s[20] = {0};
   snprintf(s, sizeof(s), "speed %d", x);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::SetRC(int16_t a, int16_t b, int16_t c, int16_t d)
+void RMTT_Protocol::SetRC(int16_t a, int16_t b, int16_t c, int16_t d, std::function<void(char *cmd, String res)> callback)
 {
   char s[40] = {0};
   snprintf(s, sizeof(s), "rc %d %d %d %d", a, b, c, d);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::SetMon()
+void RMTT_Protocol::SetMon(std::function<void(char *cmd, String res)> callback)
 {
-  nonblockSendTelloCtrlMsg((char *)"mon");
+  sendCmd((char *)"mon", callback);
 }
 
-void RMTT_Protocol::SetMoff()
+void RMTT_Protocol::SetMoff(std::function<void(char *cmd, String res)> callback)
 {
-  nonblockSendTelloCtrlMsg((char *)"moff");
+  sendCmd((char *)"moff", callback);
 }
 
-void RMTT_Protocol::SetMdirection(uint8_t x)
+void RMTT_Protocol::SetMdirection(uint8_t x, std::function<void(char *cmd, String res)> callback)
 {
   char s[20] = {0};
   snprintf(s, sizeof(s), "mdirection %d", x);
-  nonblockSendTelloCtrlMsg((char *)s);
+  sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::ReadSpeed()
+void RMTT_Protocol::ReadSpeed(std::function<void(char *cmd, String res)> callback)
 {
-  nonblockSendTelloCtrlMsg((char *)"speed?");
+  sendCmd((char *)"speed?", callback);
 }
 
-void RMTT_Protocol::ReadBattery()
+void RMTT_Protocol::ReadBattery(std::function<void(char *cmd, String res)> callback)
 {
-  nonblockSendTelloCtrlMsg((char *)"battery?");
+  sendCmd((char *)"battery?", callback);
 }
 
-void RMTT_Protocol::ReadTime()
+void RMTT_Protocol::ReadTime(std::function<void(char *cmd, String res)> callback)
 {
-  nonblockSendTelloCtrlMsg((char *)"time?");
+  sendCmd((char *)"time?", callback);
 }
 
-void RMTT_Protocol::ReadSN()
+void RMTT_Protocol::ReadSN(std::function<void(char *cmd, String res)> callback)
 {
-  nonblockSendTelloCtrlMsg((char *)"sn?");
+  sendCmd((char *)"sn?", callback);
 }
 
-void RMTT_Protocol::ReadSDKVersion()
+void RMTT_Protocol::ReadSDKVersion(std::function<void(char *cmd, String res)> callback)
 {
-  nonblockSendTelloCtrlMsg((char *)"sdk?");
+  sendCmd((char *)"sdk?", callback);
 }
 
 void RMTT_Protocol::startUntilControl()
@@ -329,53 +329,7 @@ int RMTT_Protocol::getTelloResponseInt(uint32_t timeout)
 
 // Number of sent commands
 uint8_t cmdId = 0;
-// Number of tries to send the same command
-uint8_t tryCount = 0;
-
-String RMTT_Protocol::blockSendTelloCtrlMsg(char *cmd_str, uint32_t timeout)
-{
-  long blockedTime = millis();
-  tryCount = 0;
-  String res;
-  while (millis() - blockedTime < timeout)
-  {
-    // discard the previous command responses/debris
-    while (Serial1.available())
-      Serial1.read();
-
-    Serial1.printf("[TELLO] Re%02x%02x %s", cmdId, tryCount++, cmd_str);
-
-    // While there is no response and blockedTime is less than timeout, send the command again
-    while (!Serial1.available())
-    {
-      if (millis() - blockedTime >= timeout)
-        return String("timeout");
-      delay(100);
-      Serial1.printf("[TELLO] Re%02x%02x %s", cmdId, tryCount++, cmd_str);
-    }
-
-    res = "";
-    while (Serial1.available())
-      res += String(char(Serial1.read()));
-
-    char *hasError = strstr(res.c_str(), "error");
-    // ETT Re[tag][id] ok/error
-    // ETT Rexxxx ok/error
-    if (hasError != NULL)
-    {
-      delay(100);
-      tryCount++;
-      continue;
-    }
-
-    cmdId++;
-    return res;
-  }
-  res = res == String("") ? String("timeout") : res;
-  return res;
-}
-
-String RMTT_Protocol::nonblockSendTelloCtrlMsg(char *cmd)
+void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)> callback)
 {
   while (Serial1.available())
     Serial1.read();
@@ -386,18 +340,9 @@ String RMTT_Protocol::nonblockSendTelloCtrlMsg(char *cmd)
   delay(10);
 
   String res = "";
-   while (Serial1.available())
-  {
+  while (Serial1.available())
     res += String(char(Serial1.read()));
-  }
 
-  return res;
+  callback(cmd, res);
 }
 
-String RMTT_Protocol::sendCMD(char *cmd, bool isBlocking, uint32_t timeout)
-{
-  if (!isBlocking)
-    return nonblockSendTelloCtrlMsg(cmd);
-  else
-    return blockSendTelloCtrlMsg(cmd, timeout);
-}
