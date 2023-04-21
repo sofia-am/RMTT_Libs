@@ -17,22 +17,8 @@ RMTT_Protocol::RMTT_Protocol()
 {
 }
 
-RMTT_Protocol::RMTT_Protocol(uint16_t time)
-{
-  sdk_time = time;
-}
-
 RMTT_Protocol::~RMTT_Protocol()
 {
-}
-
-void RMTT_Protocol::nonblockSendTelloCtrlMsg(char *cmd)
-{
-  Serial1.printf("[TELLO] %s", cmd);
-  if (sdk_time)
-  {
-    delay(sdk_time);
-  }
 }
 
 void RMTT_Protocol::SDKOn()
@@ -351,7 +337,7 @@ String RMTT_Protocol::blockSendTelloCtrlMsg(char *cmd_str, uint32_t timeout)
   long blockedTime = millis();
   tryCount = 0;
   String res;
-  while (millis() - blockedTime <= timeout)
+  while (millis() - blockedTime < timeout)
   {
     // discard the previous command responses/debris
     while (Serial1.available())
@@ -387,4 +373,31 @@ String RMTT_Protocol::blockSendTelloCtrlMsg(char *cmd_str, uint32_t timeout)
   }
   res = res == String("") ? String("timeout") : res;
   return res;
+}
+
+String RMTT_Protocol::nonblockSendTelloCtrlMsg(char *cmd)
+{
+  while (Serial1.available())
+    Serial1.read();
+
+  Serial1.printf("[TELLO] Re%02x%02x %s", cmdId, 1, cmd);
+  cmdId++;
+
+  delay(10);
+
+  String res = "";
+   while (Serial1.available())
+  {
+    res += String(char(Serial1.read()));
+  }
+
+  return res;
+}
+
+String RMTT_Protocol::sendCMD(char *cmd, bool isBlocking, uint32_t timeout)
+{
+  if (!isBlocking)
+    return nonblockSendTelloCtrlMsg(cmd);
+  else
+    return blockSendTelloCtrlMsg(cmd, timeout);
 }

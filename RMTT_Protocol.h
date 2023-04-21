@@ -15,7 +15,8 @@
 class RMTT_Protocol
 {
 private:
-    void nonblockSendTelloCtrlMsg(char *cmd);
+    String nonblockSendTelloCtrlMsg(char *cmd);
+    String blockSendTelloCtrlMsg(char *cmd_str, uint32_t timeout);
 
 public:
     RMTT_Protocol();
@@ -24,6 +25,8 @@ public:
 
     void SDKOn();
     void SDKOff();
+
+    String sendCMD(char *cmd, bool isBlocking, uint32_t timeout = 100);
 
     void TakeOff();
     void Land();
@@ -56,12 +59,10 @@ public:
     void ReadSN();
     void ReadSDKVersion();
 
-
     // 函数声明
-    String getTelloMsgString(char* cmd, uint32_t timeout);
-    int    getTelloMsgInt(char* cmd, uint32_t timeout);
+    String getTelloMsgString(char *cmd, uint32_t timeout);
+    int getTelloMsgInt(char *cmd, uint32_t timeout);
     String getTelloResponseString(uint32_t timeout);
-    int    getTelloResponseInt(uint32_t timeout);
-    void   startUntilControl();
-    String blockSendTelloCtrlMsg(char *cmd_str, uint32_t timeout);
+    int getTelloResponseInt(uint32_t timeout);
+    void startUntilControl();
 };
