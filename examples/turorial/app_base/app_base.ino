@@ -552,7 +552,7 @@ void tof_battery_read_task(void *arg)
 
         if (!(battery_cnt % 10))
         {
-            tt_sdk.ReadBattery();
+            tt_sdk.getBattery();
         }
 
         if (tof_range >= 40 || tof_range <= 800)

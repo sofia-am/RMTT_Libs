@@ -126,7 +126,7 @@ class GamesirAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
     }
 
 #ifdef RMTT_GAMESIR_DEBUG
-    Serial.println("onResult(): UUID Scan Stop!");
+    Serial.println("onResult(): UUID Scan stop!");
 #endif
     BLEDevice::getScan()->stop();
 
