@@ -1342,7 +1342,7 @@ void tof_battery_read_task(void *arg)
         {
             if (upgrade_mode == 0)
             {
-                tt_sdk.ReadBattery();
+                tt_sdk.getBattery();
             }
         }
 
@@ -1795,19 +1795,19 @@ void gamesir_task(void *arg)
 
             if ((data.btn3 == 0x01) && (data.L2))
             {
-                tt_sdk.Flip('f');
+                tt_sdk.flip('f');
             }
             else if ((data.btn3 == 0x03) && (data.L2))
             {
-                tt_sdk.Flip('r');
+                tt_sdk.flip('r');
             }
             else if ((data.btn3 == 0x05) && (data.L2))
             {
-                tt_sdk.Flip('b');
+                tt_sdk.flip('b');
             }
             else if ((data.btn3 == 0x07) && (data.L2))
             {
-                tt_sdk.Flip('l');
+                tt_sdk.flip('l');
             }
             else if ((data.Y) && (data.R2))
             {
@@ -1825,9 +1825,9 @@ void gamesir_task(void *arg)
             else
             {
 #ifdef BLE_JAPAN_CTRL
-                tt_sdk.SetRC(lx, -ly, -ry, rx);
+                tt_sdk.setRC(lx, -ly, -ry, rx);
 #else
-                tt_sdk.SetRC(rx, -ry, -ly, lx);
+                tt_sdk.setRC(rx, -ry, -ly, lx);
 #endif
             }
         }
@@ -1843,7 +1843,7 @@ void gamesir_task(void *arg)
             {
                 if (stop_cnt)
                 {
-                    tt_sdk.SetRC(0, 0, 0, 0);
+                    tt_sdk.setRC(0, 0, 0, 0);
                     stop_cnt--;
                 }
             }

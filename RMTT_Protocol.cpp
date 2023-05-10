@@ -21,194 +21,296 @@ RMTT_Protocol::~RMTT_Protocol()
 {
 }
 
-void RMTT_Protocol::SDKOn(std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::sdkOn(std::function<void(char *cmd, String res)> callback)
 {
   sendCmd((char *)"command", callback);
 }
 
-void RMTT_Protocol::SDKOff(std::function<void(char *cmd, String res)> callback)
-{
-}
-
-void RMTT_Protocol::TakeOff(std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::takeOff(std::function<void(char *cmd, String res)> callback)
 {
   sendCmd((char *)"takeoff", callback);
 }
 
-void RMTT_Protocol::Land(std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::land(std::function<void(char *cmd, String res)> callback)
 {
   sendCmd((char *)"land", callback);
 }
 
-void RMTT_Protocol::Emergency(std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::streamOn(std::function<void(char *cmd, String res)> callback)
+{
+  sendCmd((char *)"streamon", callback);
+}
+
+void RMTT_Protocol::streamOff(std::function<void(char *cmd, String res)> callback)
+{
+  sendCmd((char *)"streamoff", callback);
+}
+
+void RMTT_Protocol::emergency(std::function<void(char *cmd, String res)> callback)
 {
   sendCmd((char *)"emergency", callback);
 }
 
-void RMTT_Protocol::Up(int16_t x, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::up(int16_t x, std::function<void(char *cmd, String res)> callback)
 {
-  char s[20] = {0};
+  char s[20];
   snprintf(s, sizeof(s), "up %d", x);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Down(int16_t x, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::down(int16_t x, std::function<void(char *cmd, String res)> callback)
 {
-  char s[20] = {0};
+  char s[20];
   snprintf(s, sizeof(s), "down %d", x);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Left(int16_t x, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::left(int16_t x, std::function<void(char *cmd, String res)> callback)
 {
-  char s[20] = {0};
+  char s[20];
   snprintf(s, sizeof(s), "left %d", x);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Right(int16_t x, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::right(int16_t x, std::function<void(char *cmd, String res)> callback)
 {
-  char s[20] = {0};
+  char s[20];
   snprintf(s, sizeof(s), "right %d", x);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Forward(int16_t x, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::forward(int16_t x, std::function<void(char *cmd, String res)> callback)
 {
-  char s[20] = {0};
+  char s[20];
   snprintf(s, sizeof(s), "forward %d", x);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Back(int16_t x, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::back(int16_t x, std::function<void(char *cmd, String res)> callback)
 {
-  char s[20] = {0};
+  char s[20];
   snprintf(s, sizeof(s), "res %d", x);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::CW(uint16_t x, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::clockWise(uint16_t x, std::function<void(char *cmd, String res)> callback)
 {
-  char s[20] = {0};
+  char s[20];
   snprintf(s, sizeof(s), "cw %d", x);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::CCW(uint16_t x, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::counterClockWise(uint16_t x, std::function<void(char *cmd, String res)> callback)
 {
-  char s[20] = {0};
+  char s[20];
   snprintf(s, sizeof(s), "ccw %d", x);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Flip(char x, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::motorOn(std::function<void(char *cmd, String res)> callback)
 {
-  char s[20] = {0};
+  sendCmd((char *)"motoron", callback);
+}
+
+void RMTT_Protocol::motorOff(std::function<void(char *cmd, String res)> callback)
+{
+  sendCmd((char *)"motoroff", callback);
+}
+
+void RMTT_Protocol::throwFly(std::function<void(char *cmd, String res)> callback)
+{
+  sendCmd((char *)"throwfly", callback);
+}
+
+void RMTT_Protocol::flip(char x, std::function<void(char *cmd, String res)> callback)
+{
+  char s[15];
   snprintf(s, sizeof(s), "flip %c", x);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Go(int16_t x, int16_t y, int16_t z, uint16_t speed, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::go(int16_t x, int16_t y, int16_t z, uint16_t speed, std::function<void(char *cmd, String res)> callback)
 {
-  char s[40] = {0};
+  char s[100];
   snprintf(s, sizeof(s), "go %d %d %d %d", x, y, z, speed);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Go(int16_t x, int16_t y, int16_t z, uint16_t speed, char *mid, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::go(int16_t x, int16_t y, int16_t z, uint16_t speed, char *mid, std::function<void(char *cmd, String res)> callback)
 {
-  char s[40] = {0};
+  char s[100];
   snprintf(s, sizeof(s), "go %d %d %d %d %s", x, y, z, speed, mid);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Stop(std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::stop(std::function<void(char *cmd, String res)> callback)
 {
   sendCmd((char *)"stop", callback);
 }
 
-void RMTT_Protocol::Curve(int16_t x1, int16_t y1, int16_t z1, int16_t x2, int16_t y2, int16_t z2, uint16_t speed, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::curve(int16_t x1, int16_t y1, int16_t z1, int16_t x2, int16_t y2, int16_t z2, uint16_t speed, std::function<void(char *cmd, String res)> callback)
 {
-  char s[60] = {0};
+  char s[100];
   snprintf(s, sizeof(s), "curve %d %d %d %d %d %d %d", x1, y1, z1, x2, y2, z2, speed);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Curve(int16_t x1, int16_t y1, int16_t z1, int16_t x2, int16_t y2, int16_t z2, uint16_t speed, char *mid, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::curve(int16_t x1, int16_t y1, int16_t z1, int16_t x2, int16_t y2, int16_t z2, uint16_t speed, char *mid, std::function<void(char *cmd, String res)> callback)
 {
-  char s[60] = {0};
+  char s[100];
   snprintf(s, sizeof(s), "curve %d %d %d %d %d %d %d %s", x1, y1, z1, x2, y2, z2, speed, mid);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::Jump(int16_t x, int16_t y, int16_t z, uint16_t speed, int16_t yaw, char *mid1, char *mid2, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::jump(int16_t x, int16_t y, int16_t z, uint16_t speed, int16_t yaw, char *mid1, char *mid2, std::function<void(char *cmd, String res)> callback)
 {
-  char s[60] = {0};
+  char s[100];
   snprintf(s, sizeof(s), "jump %d %d %d %d %d %s %s", x, y, z, speed, yaw, mid1, mid2);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::SetSpeed(int16_t x, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::setSpeed(int16_t x, std::function<void(char *cmd, String res)> callback)
 {
-  char s[20] = {0};
+  char s[30];
   snprintf(s, sizeof(s), "speed %d", x);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::SetRC(int16_t a, int16_t b, int16_t c, int16_t d, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::setRC(int16_t a, int16_t b, int16_t c, int16_t d, std::function<void(char *cmd, String res)> callback)
 {
-  char s[40] = {0};
+  char s[50];
   snprintf(s, sizeof(s), "rc %d %d %d %d", a, b, c, d);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::SetMon(std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::setDroneWifi(char *ssid, char *pass, std::function<void(char *cmd, String res)> callback)
+{
+  char s[100];
+  snprintf(s, sizeof(s), "wifi %s %s", ssid, pass);
+  sendCmd((char *)s, callback);
+}
+
+void RMTT_Protocol::setMon(std::function<void(char *cmd, String res)> callback)
 {
   sendCmd((char *)"mon", callback);
 }
 
-void RMTT_Protocol::SetMoff(std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::setMoff(std::function<void(char *cmd, String res)> callback)
 {
   sendCmd((char *)"moff", callback);
 }
 
-void RMTT_Protocol::SetMdirection(uint8_t x, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::setOneDirection(uint8_t x, std::function<void(char *cmd, String res)> callback)
 {
-  char s[20] = {0};
+  char s[30];
   snprintf(s, sizeof(s), "mdirection %d", x);
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::ReadSpeed(std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::setAP(char *ssid, char *pass, std::function<void(char *cmd, String res)> callback)
+{
+  char s[100];
+  snprintf(s, sizeof(s), "ap %s %s", ssid, pass);
+  sendCmd((char *)s, callback);
+}
+
+void RMTT_Protocol::setWiFiChannel(uint16_t channel, std::function<void(char *cmd, String res)> callback)
+{
+  char s[30];
+  snprintf(s, sizeof(s), "wifisetchannel %d", channel);
+  sendCmd((char *)s, callback);
+}
+
+void RMTT_Protocol::setPortStatusStreaming(uint16_t portStatus, uint16_t portStreaming, std::function<void(char *cmd, String res)> callback)
+{
+  char s[100];
+  snprintf(s, sizeof(s), "port %d %d", portStatus, portStreaming);
+  sendCmd((char *)s, callback);
+}
+
+void RMTT_Protocol::setFPS(char *fps, std::function<void(char *cmd, String res)> callback)
+{
+  char s[20];
+  snprintf(s, sizeof(s), "fps %s", fps);
+  sendCmd((char *)s, callback);
+}
+
+void RMTT_Protocol::setBitrate(uint8_t bitrate, std::function<void(char *cmd, String res)> callback)
+{
+  char s[30];
+  snprintf(s, sizeof(s), "setbitrate %d", bitrate);
+  sendCmd((char *)s, callback);
+}
+
+void RMTT_Protocol::setResolution(char *resolution, std::function<void(char *cmd, String res)> callback)
+{
+  char s[100];
+  snprintf(s, sizeof(s),"setresolution %s", resolution);
+  sendCmd(s, callback);
+}
+
+void RMTT_Protocol::setMultiFiwiSSIDPass(char *ssid, char *pass, std::function<void(char *cmd, String res)> callback)
+{
+  char s[100];
+  snprintf(s, sizeof(s), "multiwifi %s %s", ssid, pass);
+  sendCmd((char *)s, callback);
+}
+
+void RMTT_Protocol::getSpeed(std::function<void(char *cmd, String res)> callback)
 {
   sendCmd((char *)"speed?", callback);
 }
 
-void RMTT_Protocol::ReadBattery(std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::getBattery(std::function<void(char *cmd, String res)> callback)
 {
   sendCmd((char *)"battery?", callback);
 }
 
-void RMTT_Protocol::ReadTime(std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::getWiFi(std::function<void(char *cmd, String res)> callback)
+{
+  sendCmd((char *)"wifi?", callback);
+}
+
+void RMTT_Protocol::getMotorTime(std::function<void(char *cmd, String res)> callback)
 {
   sendCmd((char *)"time?", callback);
 }
 
-void RMTT_Protocol::ReadSN(std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::getSN(std::function<void(char *cmd, String res)> callback)
 {
   sendCmd((char *)"sn?", callback);
 }
 
-void RMTT_Protocol::ReadSDKVersion(std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::getSDKVersion(std::function<void(char *cmd, String res)> callback)
 {
   sendCmd((char *)"sdk?", callback);
+}
+
+void RMTT_Protocol::getHardwareInfo(std::function<void(char *cmd, String res)> callback)
+{
+  sendCmd((char *)"hardware?", callback);
+}
+
+void RMTT_Protocol::getWiFiVersion(std::function<void(char *cmd, String res)> callback)
+{
+  sendCmd((char *)"wifiversion?", callback);
+}
+
+void RMTT_Protocol::getApInfo(std::function<void(char *cmd, String res)> callback)
+{
+  sendCmd((char *)"ap?", callback);
+}
+
+void RMTT_Protocol::getSSID(std::function<void(char *cmd, String res)> callback)
+{
+  sendCmd((char *)"ssid?", callback);
 }
 
 void RMTT_Protocol::startUntilControl()
 {
   pinMode(34, INPUT_PULLUP);
   RMTT_RGB::Init();
-  while (!(getTelloMsgString("[TELLO] command", 1000) == String("ETT ok")))
+  while (!(getTelloMsgString((char *)"[TELLO] command", 1000) == String("ETT ok")))
   {
   }
   RMTT_RGB::SetRGB(0, 255, 0);
@@ -345,4 +447,3 @@ void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)
 
   callback(cmd, res);
 }
-

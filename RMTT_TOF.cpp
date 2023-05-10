@@ -803,7 +803,7 @@ void RMTT_TOF::StartContinuous(uint32_t period_ms)
   RMTT_I2C_BUSY_UNLOCK();
 }
 
-// Stop continuous measurements
+// stop continuous measurements
 // based on VL53L0X_StopMeasurement()
 void RMTT_TOF::StopContinuous(void)
 {
