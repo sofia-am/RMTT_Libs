@@ -313,7 +313,7 @@ void RMTT_Protocol::startUntilControl()
   while (!(getTelloMsgString((char *)"[TELLO] command", 1000) == String("ETT ok")))
   {
   }
-  RMTT_RGB::SetRGB(0, 255, 0);
+  // RMTT_RGB::SetRGB(0, 255, 0);
   while (!((digitalRead(34)) == 0))
   {
   }
@@ -439,11 +439,18 @@ void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)
   Serial1.printf("[TELLO] Re%02x%02x %s", cmdId, 1, cmd);
   cmdId++;
 
-  delay(10);
+//  delay(5000);
 
   String res = "";
-  while (Serial1.available())
+
+
+  while(!Serial1.available());// se queda esperando a que le llegue la respuesta
+  
+  while (Serial1.available()){
+
     res += String(char(Serial1.read()));
+
+  }
 
   callback(cmd, res);
 }
