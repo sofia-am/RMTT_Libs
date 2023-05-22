@@ -11,6 +11,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include "models/Coordinate.h"
 
 class RMTT_Protocol
 {
@@ -40,6 +41,7 @@ public:
     void flip(char x, std::function<void(char *cmd, String res)> callback = NULL);
     void go(int16_t x, int16_t y, int16_t z, uint16_t speed, std::function<void(char *cmd, String res)> callback = NULL);
     void go(int16_t x, int16_t y, int16_t z, uint16_t speed, char *mid, std::function<void(char *cmd, String res)> callback = NULL);
+    void moveRealtiveTo(Coordinate p1, Coordinate p2, uint16_t speed, std::function<void(char *cmd, String res)> callback = NULL);
     void stop(std::function<void(char *cmd, String res)> callback = NULL);
     void curve(int16_t x1, int16_t y1, int16_t z1, int16_t x2, int16_t y2, int16_t z2, uint16_t speed, std::function<void(char *cmd, String res)> callback = NULL);
     void curve(int16_t x1, int16_t y1, int16_t z1, int16_t x2, int16_t y2, int16_t z2, uint16_t speed, char *mid, std::function<void(char *cmd, String res)> callback = NULL);

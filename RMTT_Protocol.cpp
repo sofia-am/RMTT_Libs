@@ -10,6 +10,7 @@
 
 #include "RMTT_Libs.h"
 #include "RMTT_Protocol.h"
+#include "models/Coordinate.h"
 
 static uint16_t sdk_time = 0;
 
@@ -143,6 +144,13 @@ void RMTT_Protocol::go(int16_t x, int16_t y, int16_t z, uint16_t speed, char *mi
   sendCmd((char *)s, callback);
 }
 
+void RMTT_Protocol::moveRealtiveTo(Coordinate p1, Coordinate p2, uint16_t speed, std::function<void(char *cmd, String res)> callback)
+{
+  const char s[100];
+  snprintf(s, sizeof(s), "go %d %d %d %d", p2.x - p1.x, p2.y - p1.y, p2.z - p1.z, speed);
+  sendCmd(s, callback);
+}
+
 void RMTT_Protocol::stop(std::function<void(char *cmd, String res)> callback)
 {
   sendCmd((char *)"stop", callback);
@@ -245,7 +253,7 @@ void RMTT_Protocol::setBitrate(uint8_t bitrate, std::function<void(char *cmd, St
 void RMTT_Protocol::setResolution(char *resolution, std::function<void(char *cmd, String res)> callback)
 {
   char s[100];
-  snprintf(s, sizeof(s),"setresolution %s", resolution);
+  snprintf(s, sizeof(s), "setresolution %s", resolution);
   sendCmd(s, callback);
 }
 
@@ -313,7 +321,7 @@ void RMTT_Protocol::startUntilControl()
   while (!(getTelloMsgString((char *)"[TELLO] command", 1000) == String("ETT ok")))
   {
   }
-  // RMTT_RGB::SetRGB(0, 255, 0);
+  RMTT_RGB::SetRGB(0, 255, 0);
   while (!((digitalRead(34)) == 0))
   {
   }
@@ -439,18 +447,11 @@ void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)
   Serial1.printf("[TELLO] Re%02x%02x %s", cmdId, 1, cmd);
   cmdId++;
 
-//  delay(5000);
+  delay(10);
 
   String res = "";
-
-
-  while(!Serial1.available());// se queda esperando a que le llegue la respuesta
-  
-  while (Serial1.available()){
-
+  while (Serial1.available())
     res += String(char(Serial1.read()));
-
-  }
 
   callback(cmd, res);
 }
