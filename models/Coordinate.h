@@ -9,13 +9,13 @@ Esta clase toma las coordenadas x,y,z que recibe en un json y las devuelve en cm
 class Coordinate
 {
 private:
-    const char *unit;
+    char *unit;
     float x;
     float y;
     float z;
 
 public:
-    Coordinate(const char *, float, float, float);
+    Coordinate(char *, float, float, float);
     float getX();
     float getY();
     float getZ();

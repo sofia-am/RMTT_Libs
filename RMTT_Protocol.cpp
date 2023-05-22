@@ -147,7 +147,10 @@ void RMTT_Protocol::go(int16_t x, int16_t y, int16_t z, uint16_t speed, char *mi
 void RMTT_Protocol::moveRealtiveTo(Coordinate p1, Coordinate p2, uint16_t speed, std::function<void(char *cmd, String res)> callback)
 {
   char s[100];
-  snprintf(s, sizeof(s), "go %d %d %d %d", p2.getX() - p1.getX(), p2.getY() - p1.getY(), p2.getZ() - p1.getZ(), speed);
+  int16_t pointX = p2.getX() - p1.getX();
+  int16_t pointY = p2.getY() - p1.getY();
+  int16_t pointZ = p2.getZ() - p1.getZ();
+  snprintf(s, sizeof(s), "go %d %d %d %d", pointX, pointY, pointZ, speed);
   sendCmd((char *)s, callback);
 }
 
