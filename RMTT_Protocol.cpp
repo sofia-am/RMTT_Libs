@@ -441,6 +441,9 @@ int RMTT_Protocol::getTelloResponseInt(uint32_t timeout)
 uint8_t cmdId = 0;
 void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)> callback)
 {
+  const unsigned long TIMEOUT_DURATION = 20000;
+  unsigned long start = millis();
+
   while (Serial1.available())
     Serial1.read();
 
@@ -450,7 +453,12 @@ void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)
   String res = "";
 
   while (!Serial1.available())
-    ;
+  {
+    if (millis() - start < TIMEOUT_DURATION)
+      continue;
+    else
+      land();
+  }
 
   while (Serial1.available())
     res += String(char(Serial1.read()));
