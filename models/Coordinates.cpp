@@ -1,8 +1,9 @@
 #include "Coordinate.h"
 
-Coordinate::Coordinate(const char *unit, float x, float y, float z)
+Coordinate::Coordinate(char *unit, float x, float y, float z)
 {
-    this->unit = unit;
+    this->unit = new char[strlen(unit) + 1];
+    strcpy(this->unit, unit);
     this->x = x;
     this->y = y;
     this->z = z;
@@ -25,19 +26,19 @@ float Coordinate::getZ()
 
 float Coordinate::getScalar()
 {
-    if (unit == "mm")
+    if (strcmp(unit, "mm") == 0)
     {
-        return 1 / 10;
+        return 1 / 10.0;
     }
-    else if (unit == "cm")
+    else if (strcmp(unit, "cm") == 0)
     {
         return 1;
     }
-    else if (unit == "M")
+    else if (strcmp(unit, "m") == 0)
     {
         return 1 * 100;
     }
-    else if (unit == "Km")
+    else if (strcmp(unit, "km") == 0)
     {
         return 1 * 100 * 1000;
     }
@@ -56,7 +57,7 @@ void Coordinate::printPoints(std::queue<Coordinate> points)
 
     for (int i = 0; i < points.size(); i++)
     {
-        char buffer[50];
+        char buffer[60];
         Coordinate point = points.front();
         points.pop();
         point.toString(buffer);

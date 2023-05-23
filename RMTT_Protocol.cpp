@@ -146,9 +146,12 @@ void RMTT_Protocol::go(int16_t x, int16_t y, int16_t z, uint16_t speed, char *mi
 
 void RMTT_Protocol::moveRealtiveTo(Coordinate p1, Coordinate p2, uint16_t speed, std::function<void(char *cmd, String res)> callback)
 {
-  const char s[100];
-  snprintf(s, sizeof(s), "go %d %d %d %d", p2.x - p1.x, p2.y - p1.y, p2.z - p1.z, speed);
-  sendCmd(s, callback);
+  char s[100];
+  int16_t pointX = p2.getX() - p1.getX();
+  int16_t pointY = p2.getY() - p1.getY();
+  int16_t pointZ = p2.getZ() - p1.getZ();
+  snprintf(s, sizeof(s), "go %d %d %d %d", pointX, pointY, pointZ, speed);
+  sendCmd((char *)s, callback);
 }
 
 void RMTT_Protocol::stop(std::function<void(char *cmd, String res)> callback)
@@ -317,7 +320,7 @@ void RMTT_Protocol::getSSID(std::function<void(char *cmd, String res)> callback)
 void RMTT_Protocol::startUntilControl()
 {
   pinMode(34, INPUT_PULLUP);
-  RMTT_RGB::Init();
+  // RMTT_RGB::Init();
   while (!(getTelloMsgString((char *)"[TELLO] command", 1000) == String("ETT ok")))
   {
   }
@@ -325,11 +328,11 @@ void RMTT_Protocol::startUntilControl()
   while (!((digitalRead(34)) == 0))
   {
   }
-  RMTT_RGB::SetRGB(0, 0, 0);
-  delay(1000);
-  RMTT_RGB::SetRGB(0, 255, 0);
-  delay(1000);
-  RMTT_RGB::SetRGB(0, 0, 0);
+  // RMTT_RGB::SetRGB(0, 0, 0);
+  // delay(1000);
+  // RMTT_RGB::SetRGB(0, 255, 0);
+  // delay(1000);
+  // RMTT_RGB::SetRGB(0, 0, 0);
 }
 
 // 静态函数
@@ -441,15 +444,25 @@ int RMTT_Protocol::getTelloResponseInt(uint32_t timeout)
 uint8_t cmdId = 0;
 void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)> callback)
 {
+  const unsigned long TIMEOUT_DURATION = 20000;
+  unsigned long start = millis();
+
   while (Serial1.available())
     Serial1.read();
 
   Serial1.printf("[TELLO] Re%02x%02x %s", cmdId, 1, cmd);
   cmdId++;
 
-  delay(10);
-
   String res = "";
+
+  while (!Serial1.available())
+  {
+    if (millis() - start < TIMEOUT_DURATION)
+      continue;
+    else
+      land();
+  }
+
   while (Serial1.available())
     res += String(char(Serial1.read()));
 
