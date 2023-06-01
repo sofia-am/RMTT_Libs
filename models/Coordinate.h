@@ -5,6 +5,10 @@ Esta clase toma las coordenadas x,y,z que recibe en un json y las devuelve en cm
 #include <stdio.h>
 #include <queue>
 #include <Arduino.h>
+#include <math.h>
+
+#define MAX_DISTANCE (float)500
+#define MIN_DISTANCE (float)-500
 
 class Coordinate
 {
@@ -19,7 +23,8 @@ public:
     float getX();
     float getY();
     float getZ();
-    float getScalar();
+    float getUnitScalar();
     void toString(char *buffer);
+    static uint8_t getPointScalar(float xDistance, float yDistance, float zDistance);
     static void printPoints(std::queue<Coordinate> points);
 };
