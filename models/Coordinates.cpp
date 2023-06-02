@@ -1,6 +1,6 @@
 #include "Coordinate.h"
 
-Coordinate::Coordinate(char *unit, float x, float y, float z)
+Coordinate::Coordinate(char *unit, int16_t x, int16_t y, int16_t z)
 {
     this->unit = new char[strlen(unit) + 1];
     strcpy(this->unit, unit);
@@ -9,22 +9,22 @@ Coordinate::Coordinate(char *unit, float x, float y, float z)
     this->z = z;
 }
 
-float Coordinate::getX()
+int16_t Coordinate::getX()
 {
     return x * getUnitScalar();
 }
 
-float Coordinate::getY()
+int16_t Coordinate::getY()
 {
     return y * getUnitScalar();
 }
 
-float Coordinate::getZ()
+int16_t Coordinate::getZ()
 {
     return z * getUnitScalar();
 }
 
-float Coordinate::getUnitScalar()
+int16_t Coordinate::getUnitScalar()
 {
     if (strcmp(unit, "mm") == 0)
     {
@@ -50,7 +50,7 @@ float Coordinate::getUnitScalar()
 
 void Coordinate::toString(char *buffer)
 {
-    sprintf(buffer, "(x = %.2f, y = %.2f, z = %.2f, unit = %s)", x, y, z, unit);
+    sprintf(buffer, "(x = %d, y = %d, z = %d, unit = %s)", x, y, z, unit);
 }
 
 void Coordinate::printPoints(std::queue<Coordinate> points)
@@ -66,9 +66,9 @@ void Coordinate::printPoints(std::queue<Coordinate> points)
     }
 }
 
-uint8_t Coordinate::getPointScalar(float xDistance, float yDistance, float zDistance)
+uint8_t Coordinate::getPointScalar(int16_t xDistance, int16_t yDistance, int16_t zDistance)
 {
-    float max = 0, min = 0;
+    int16_t max = 0, min = 0;
 
     if (xDistance > max)
         max = xDistance;
@@ -84,9 +84,9 @@ uint8_t Coordinate::getPointScalar(float xDistance, float yDistance, float zDist
         min = zDistance;
 
     if (max != 0)
-        return (uint8_t)ceil(max / (float)MAX_DISTANCE);
+        return (uint8_t)ceil(max / MAX_DISTANCE);
     else if (min != 0)
-        return (uint8_t)ceil(min / (float)MIN_DISTANCE);
+        return (uint8_t)ceil(min / MIN_DISTANCE);
     else
         return 1;
 }
