@@ -23,7 +23,7 @@ public:
     int16_t getX();
     int16_t getY();
     int16_t getZ();
-    int16_t getUnitScalar();
+    float getUnitScalar();
     void toString(char *buffer);
     static uint8_t getPointScalar(int16_t xDistance, int16_t yDistance, int16_t zDistance);
     static void printPoints(std::queue<Coordinate> points);

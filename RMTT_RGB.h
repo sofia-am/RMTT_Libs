@@ -31,10 +31,14 @@
 class RMTT_RGB
 {
 private:
+    RMTT_RGB(){};
+    RMTT_RGB(RMTT_RGB const &) {}
+    RMTT_RGB &operator=(RMTT_RGB const &) {}
+    static RMTT_RGB *instance;
     static void LEDCAnalogWrite(uint8_t channel, uint32_t value, uint32_t valueMax);
 
 public:
-    RMTT_RGB(){};
+    static RMTT_RGB *getInstance();
     ~RMTT_RGB(){};
     static void Init();
     static void SetRed(uint32_t val, uint32_t valueMax = 255);

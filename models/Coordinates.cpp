@@ -24,11 +24,11 @@ int16_t Coordinate::getZ()
     return z * getUnitScalar();
 }
 
-int16_t Coordinate::getUnitScalar()
+float Coordinate::getUnitScalar()
 {
     if (strcmp(unit, "mm") == 0)
     {
-        return 1 / 10.0;
+        return 1 / 10;
     }
     else if (strcmp(unit, "cm") == 0)
     {

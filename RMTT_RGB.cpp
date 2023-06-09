@@ -12,6 +12,20 @@
 #include "RMTT_RGB.h"
 
 // #define __RMTT_RGB_DEBUG__
+RMTT_RGB *RMTT_RGB::instance = NULL;
+
+RMTT_RGB *RMTT_RGB::getInstance()
+{
+    if (instance == NULL)
+    {
+        instance = new RMTT_RGB;
+        return instance;
+    }
+    else
+    {
+        return instance;
+    }
+}
 
 void RMTT_RGB::Init(void)
 {

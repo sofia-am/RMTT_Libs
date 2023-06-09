@@ -13,13 +13,19 @@
 #include "models/Coordinate.h"
 
 static uint16_t sdk_time = 0;
+RMTT_Protocol *RMTT_Protocol::instance = NULL;
 
-RMTT_Protocol::RMTT_Protocol()
+RMTT_Protocol *RMTT_Protocol::getInstance()
 {
-}
-
-RMTT_Protocol::~RMTT_Protocol()
-{
+  if (instance == NULL)
+  {
+    instance = new RMTT_Protocol;
+    return instance;
+  }
+  else
+  {
+    return instance;
+  }
 }
 
 void RMTT_Protocol::sdkOn(std::function<void(char *cmd, String res)> callback)
