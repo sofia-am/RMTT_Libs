@@ -22,6 +22,14 @@ RMTT_Protocol *RMTT_Protocol::getInstance()
   {
     instance = new RMTT_Protocol;
     xCmdMutex = xSemaphoreCreateMutex();
+    if (xSemaphoreGive(xCmdMutex) == pdTRUE)
+    {
+      Serial.println("Semaphore released");
+    }
+    else
+    {
+      Serial.println("Semaphore not released");
+    };
     return instance;
   }
   else
@@ -469,9 +477,16 @@ void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)
     Serial1.read();
   }
 
-  Serial1.printf("[TELLO] Re%02x%02x %s", cmdId, 1, cmd);
-  cmdId++;
-
+  if (strcmp(cmd, "command") == 0)
+  {
+    Serial1.printf("[TELLO] command", cmdId, 1, cmd);
+    cmdId++;
+  }
+  else
+  {
+    Serial1.printf("[TELLO] Re%02x%02x %s", cmdId, 1, cmd);
+    cmdId++;
+  }
   String res = "";
 
   while (!Serial1.available())
@@ -479,7 +494,9 @@ void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)
     if (millis() - start < TIMEOUT_DURATION)
       continue;
     else
-      land();
+    {
+      Serial.println("TIMEOUT"); // do something
+    }
   }
 
   while (Serial1.available())
