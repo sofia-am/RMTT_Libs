@@ -53,16 +53,15 @@ void Coordinate::toString(char *buffer)
     sprintf(buffer, "(x = %d, y = %d, z = %d, unit = %s)", x, y, z, unit);
 }
 
-void Coordinate::printPoints(std::queue<Coordinate> points)
+void Coordinate::printPoints(std::vector<Coordinate> points)
 {
     uint8_t size = points.size();
     for (uint8_t i = 0; i < size; i++)
     {
         char buffer[60];
-        Coordinate point = points.front();
+        Coordinate point = points.at(i);
         point.toString(buffer);
         Serial.println(buffer);
-        points.pop();
     }
 }
 

@@ -14,12 +14,14 @@
 
 static uint16_t sdk_time = 0;
 RMTT_Protocol *RMTT_Protocol::instance = NULL;
+SemaphoreHandle_t RMTT_Protocol::xCmdMutex;
 
 RMTT_Protocol *RMTT_Protocol::getInstance()
 {
   if (instance == NULL)
   {
     instance = new RMTT_Protocol;
+    xCmdMutex = xSemaphoreCreateMutex();
     return instance;
   }
   else
@@ -329,11 +331,13 @@ void RMTT_Protocol::startUntilControl()
   // RMTT_RGB::Init();
   while (!(getTelloMsgString((char *)"[TELLO] command", 1000) == String("ETT ok")))
   {
+    delay(500);
   }
-  RMTT_RGB::SetRGB(0, 255, 0);
   while (!((digitalRead(34)) == 0))
   {
+    delay(500);
   }
+  RMTT_RGB::SetRGB(0, 255, 0);
   // RMTT_RGB::SetRGB(0, 0, 0);
   // delay(1000);
   // RMTT_RGB::SetRGB(0, 255, 0);
@@ -341,7 +345,6 @@ void RMTT_Protocol::startUntilControl()
   // RMTT_RGB::SetRGB(0, 0, 0);
 }
 
-// 静态函数
 String RMTT_Protocol::getTelloMsgString(char *cmd, uint32_t timeout)
 {
   while (Serial1.available())
@@ -450,11 +453,21 @@ int RMTT_Protocol::getTelloResponseInt(uint32_t timeout)
 uint8_t cmdId = 0;
 void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)> callback)
 {
+  TickType_t xBlockTimeMax((TickType_t)500 / portTICK_PERIOD_MS);
+
   const unsigned long TIMEOUT_DURATION = 20000;
   unsigned long start = millis();
 
+  if (xSemaphoreTake(xCmdMutex, xBlockTimeMax) == pdFAIL)
+  {
+    callback(cmd, "Not able to take mutex");
+    return;
+  }
+
   while (Serial1.available())
+  {
     Serial1.read();
+  }
 
   Serial1.printf("[TELLO] Re%02x%02x %s", cmdId, 1, cmd);
   cmdId++;
@@ -473,4 +486,10 @@ void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)
     res += String(char(Serial1.read()));
 
   callback(cmd, res);
+
+  if (xSemaphoreGive(xCmdMutex) == pdFAIL)
+  {
+    callback(cmd, "Not able to give mutex");
+    return;
+  }
 }

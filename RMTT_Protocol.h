@@ -18,10 +18,12 @@ class RMTT_Protocol
 {
 private:
     static RMTT_Protocol *instance;
+    static SemaphoreHandle_t xCmdMutex;
+
     RMTT_Protocol() {}
     RMTT_Protocol(uint16_t time) {}
     RMTT_Protocol(RMTT_Protocol const &) {}
-    RMTT_Protocol &operator=(RMTT_Protocol const &) {} 
+    RMTT_Protocol &operator=(RMTT_Protocol const &) {}
 
 public:
     static RMTT_Protocol *getInstance();
