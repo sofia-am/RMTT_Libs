@@ -13,6 +13,9 @@
 #include <Arduino.h>
 #include <queue>
 #include "models/Coordinate.h"
+#include "../../../../include/Utils.h"
+
+#define cmdDELAY (pdMS_TO_TICKS(100))
 
 class RMTT_Protocol
 {

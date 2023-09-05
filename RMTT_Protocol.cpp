@@ -462,51 +462,64 @@ uint8_t cmdId = 0;
 void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)> callback)
 {
   TickType_t xBlockTimeMax((TickType_t)500 / portTICK_PERIOD_MS);
-
+  Utils *utils = Utils::getInstance();
   const unsigned long TIMEOUT_DURATION = 20000;
   unsigned long start = millis();
 
   if (xSemaphoreTake(xCmdMutex, xBlockTimeMax) == pdFAIL)
   {
-    callback(cmd, "Not able to take mutex");
+    if (callback != NULL)
+      callback(cmd, "Not able to take mutex");
     return;
   }
 
   while (Serial1.available())
   {
+    vTaskDelay(cmdDELAY);
     Serial1.read();
   }
 
   if (strcmp(cmd, "command") == 0)
   {
     Serial1.printf("[TELLO] command", cmdId, 1, cmd);
-    cmdId++;
   }
   else
   {
     Serial1.printf("[TELLO] Re%02x%02x %s", cmdId, 1, cmd);
-    cmdId++;
   }
+  cmdId++;
+
   String res = "";
 
   while (!Serial1.available())
   {
+    vTaskDelay(cmdDELAY);
+
     if (millis() - start < TIMEOUT_DURATION)
       continue;
     else
     {
-      Serial.println("TIMEOUT"); // do something
+      utils->slog("TIMEOUT"); // do something
+      while (1)
+      {
+        vTaskDelay(cmdDELAY);
+      }
     }
   }
 
   while (Serial1.available())
+  {
     res += String(char(Serial1.read()));
+    vTaskDelay(cmdDELAY);
+  }
 
-  callback(cmd, res);
+  if (callback != NULL)
+    callback(cmd, res);
 
   if (xSemaphoreGive(xCmdMutex) == pdFAIL)
   {
-    callback(cmd, "Not able to give mutex");
+    if (callback != NULL)
+      callback(cmd, "Not able to give mutex");
     return;
   }
 }
