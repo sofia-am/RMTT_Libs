@@ -488,6 +488,12 @@ void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)
     Serial1.printf("[TELLO] Re%02x%02x %s", cmdId, 1, cmd);
   }
   cmdId++;
+  if (xSemaphoreGive(xCmdMutex) == pdFAIL)
+  {
+    if (callback != NULL)
+      callback(cmd, "Not able to give mutex");
+    return;
+  }
 
   String res = "";
 
@@ -515,11 +521,4 @@ void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)
 
   if (callback != NULL)
     callback(cmd, res);
-
-  if (xSemaphoreGive(xCmdMutex) == pdFAIL)
-  {
-    if (callback != NULL)
-      callback(cmd, "Not able to give mutex");
-    return;
-  }
 }
