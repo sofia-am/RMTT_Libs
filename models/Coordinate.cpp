@@ -9,6 +9,11 @@ Coordinate::Coordinate(char *unit, int16_t x, int16_t y, int16_t z)
     this->z = z;
 }
 
+char *Coordinate::getUnit()
+{
+    return unit;
+}
+
 int16_t Coordinate::getX()
 {
     return x * getUnitScalar();

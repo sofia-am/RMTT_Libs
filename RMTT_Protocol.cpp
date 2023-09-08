@@ -11,7 +11,7 @@
 #include "RMTT_Libs.h"
 #include "RMTT_Protocol.h"
 #include "models/Coordinate.h"
-#include "models/CmdResponse.h"
+#include "models/MoveRelativeRes.h"
 
 static uint16_t sdk_time = 0;
 RMTT_Protocol *RMTT_Protocol::instance = NULL;
@@ -161,7 +161,7 @@ void RMTT_Protocol::go(int16_t x, int16_t y, int16_t z, uint16_t speed, char *mi
   sendCmd((char *)s, callback);
 }
 
-CmdResponse RMTT_Protocol::moveRealtiveTo(Coordinate p1, Coordinate p2, uint16_t speed, std::function<void(char *cmd, String res)> callback)
+void RMTT_Protocol::moveRelativeTo(Coordinate p1, Coordinate p2, uint16_t speed, std::function<void(char *cmd, String res, MoveRelativeRes moveRealtiveRes)> callback)
 {
   char s[100];
   TickType_t execTime;
@@ -169,9 +169,8 @@ CmdResponse RMTT_Protocol::moveRealtiveTo(Coordinate p1, Coordinate p2, uint16_t
   int16_t pointY = p2.getY() - p1.getY();
   int16_t pointZ = p2.getZ() - p1.getZ();
   snprintf(s, sizeof(s), "go %d %d %d %d", pointX, pointY, pointZ, speed);
-  execTime = sendCmd((char *)s, callback);
-
-  return CmdResponse(pointX, pointY, pointZ, speed, execTime);
+  // sprintf(s, "motoron");
+  sendCmdGo(Coordinate(p1.getUnit(), pointX, pointY, pointZ), speed, s, callback);
 }
 
 void RMTT_Protocol::stop(std::function<void(char *cmd, String res)> callback)
@@ -467,7 +466,7 @@ TickType_t RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, Strin
 {
   TickType_t xBlockTimeMax((TickType_t)500 / portTICK_PERIOD_MS);
   TickType_t execTime = 0;
-  char msg[50]; 
+  char msg[50];
   Utils *utils = Utils::getInstance();
   const unsigned long TIMEOUT_DURATION = 20000;
   unsigned long start = millis();
@@ -495,11 +494,12 @@ TickType_t RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, Strin
     Serial1.printf("[TELLO] Re%02x%02x %s", cmdId, 1, cmd);
   }
   cmdId++;
+
   if (xSemaphoreGive(xCmdMutex) == pdFAIL)
   {
     if (callback != NULL)
       callback(cmd, "Not able to give mutex");
-    return;
+    return 0;
   }
 
   String res = "";
@@ -523,10 +523,29 @@ TickType_t RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, Strin
   while (Serial1.available())
   {
     res += String(char(Serial1.read()));
-    vTaskDelay(cmdDELAY);
   }
-
   execTime = xTaskGetTickCount() - execTime;
+
+  //Serial.printf("Time : %d ms\n", pdTICKS_TO_MS(execTime));
+
   if (callback != NULL)
     callback(cmd, res);
+
+  return execTime;
+}
+
+void RMTT_Protocol::sendCmdGo(Coordinate p, uint16_t speed, char *cmd, std::function<void(char *cmd, String res, MoveRelativeRes moverRelativeRes)> callback)
+{
+  TickType_t execTime;
+  execTime = sendCmd(cmd, NULL);
+  if (callback != NULL)
+  {
+    // Serial.printf("Callback is not null, Time : %d ms\n", pdTICKS_TO_MS(execTime));
+    // Serial.printf("Creating res ...\n");
+    // Serial.printf("Points are (%d, %d, %d)\n", p.getX(), p.getY(), p.getZ());
+    MoveRelativeRes moveRelativeRes = MoveRelativeRes(speed, p.getX(), p.getY(), p.getZ(), execTime);
+    //Serial.printf("The speed is %d, the time is %d, the coordinate is (%d, %d, %d)\n", moveRelativeRes.getSpeed(), pdTICKS_TO_MS(moveRelativeRes.getTime()), moveRelativeRes.getX(), moveRelativeRes.getY(), moveRelativeRes.getZ());
+    //Serial.printf("Calling callback ...\n");
+    callback(cmd, "", moveRelativeRes);
+  }  
 }
