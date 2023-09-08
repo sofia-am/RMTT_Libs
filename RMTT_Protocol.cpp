@@ -11,6 +11,7 @@
 #include "RMTT_Libs.h"
 #include "RMTT_Protocol.h"
 #include "models/Coordinate.h"
+#include "models/CmdResponse.h"
 
 static uint16_t sdk_time = 0;
 RMTT_Protocol *RMTT_Protocol::instance = NULL;
@@ -160,14 +161,17 @@ void RMTT_Protocol::go(int16_t x, int16_t y, int16_t z, uint16_t speed, char *mi
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::moveRealtiveTo(Coordinate p1, Coordinate p2, uint16_t speed, std::function<void(char *cmd, String res)> callback)
+CmdResponse RMTT_Protocol::moveRealtiveTo(Coordinate p1, Coordinate p2, uint16_t speed, std::function<void(char *cmd, String res)> callback)
 {
   char s[100];
+  TickType_t execTime;
   int16_t pointX = p2.getX() - p1.getX();
   int16_t pointY = p2.getY() - p1.getY();
   int16_t pointZ = p2.getZ() - p1.getZ();
   snprintf(s, sizeof(s), "go %d %d %d %d", pointX, pointY, pointZ, speed);
-  sendCmd((char *)s, callback);
+  execTime = sendCmd((char *)s, callback);
+
+  return CmdResponse(pointX, pointY, pointZ, speed, execTime);
 }
 
 void RMTT_Protocol::stop(std::function<void(char *cmd, String res)> callback)
@@ -459,9 +463,11 @@ int RMTT_Protocol::getTelloResponseInt(uint32_t timeout)
 
 // Number of sent commands
 uint8_t cmdId = 0;
-void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)> callback)
+TickType_t RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)> callback)
 {
   TickType_t xBlockTimeMax((TickType_t)500 / portTICK_PERIOD_MS);
+  TickType_t execTime = 0;
+  char msg[50]; 
   Utils *utils = Utils::getInstance();
   const unsigned long TIMEOUT_DURATION = 20000;
   unsigned long start = millis();
@@ -470,7 +476,7 @@ void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)
   {
     if (callback != NULL)
       callback(cmd, "Not able to take mutex");
-    return;
+    return 0;
   }
 
   while (Serial1.available())
@@ -479,6 +485,7 @@ void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)
     Serial1.read();
   }
 
+  execTime = xTaskGetTickCount();
   if (strcmp(cmd, "command") == 0)
   {
     Serial1.printf("[TELLO] command", cmdId, 1, cmd);
@@ -519,6 +526,7 @@ void RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, String res)
     vTaskDelay(cmdDELAY);
   }
 
+  execTime = xTaskGetTickCount() - execTime;
   if (callback != NULL)
     callback(cmd, res);
 }
