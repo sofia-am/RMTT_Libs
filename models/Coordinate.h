@@ -19,7 +19,7 @@ private:
     int16_t z;
 
 public:
-    Coordinate(char * = nullptr, int16_t x = 0, int16_t y = 0, int16_t z = 0);
+    Coordinate(const char *, int16_t x, int16_t y, int16_t z);
     char *getUnit();
     int16_t getX();
     int16_t getY();
