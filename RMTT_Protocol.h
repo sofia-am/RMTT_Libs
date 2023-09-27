@@ -140,7 +140,7 @@ public:
      * @param p2: Coordinate object containing the x, y and z coordinates of the destination point.
      * @param speed: speed in cm/s. Can be between 10 and 100.
      */
-    void moveRelativeTo(Coordinate p1, Coordinate p2, uint16_t speed, std::function<void(char *cmd, String res, MoveRelativeRes moveRelativeRes)> callback = NULL);
+    void moveRelativeTo(Coordinate p1, Coordinate p2, uint16_t speed, std::function<void(char *cmd, String res)> callback = NULL);
     /**
      * @brief Stop moving and hover immediatly.
      */
@@ -317,8 +317,6 @@ public:
      * @brief Sends the command in the [TELLO] Re%02x%02x %s format, then waits for a response. If the response is not available within the timeout, the drone lands, else the respective callback function is called.
      */
     TickType_t sendCmd(char *cmd, std::function<void(char *cmd, String res)> callback = NULL);
-
-    void sendCmdGo(Coordinate p, uint16_t speed, char *cmd, std::function<void(char *cmd, String res, MoveRelativeRes moveRelativeRes)> callback = NULL);
 
     /**********************     Utils Control      **********************/
 

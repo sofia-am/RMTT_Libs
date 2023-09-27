@@ -161,7 +161,7 @@ void RMTT_Protocol::go(int16_t x, int16_t y, int16_t z, uint16_t speed, char *mi
   sendCmd((char *)s, callback);
 }
 
-void RMTT_Protocol::moveRelativeTo(Coordinate p1, Coordinate p2, uint16_t speed, std::function<void(char *cmd, String res, MoveRelativeRes moveRealtiveRes)> callback)
+void RMTT_Protocol::moveRelativeTo(Coordinate p1, Coordinate p2, uint16_t speed, std::function<void(char *cmd, String res)> callback)
 {
   char s[100];
   TickType_t execTime;
@@ -169,7 +169,7 @@ void RMTT_Protocol::moveRelativeTo(Coordinate p1, Coordinate p2, uint16_t speed,
   int16_t pointY = p2.getY() - p1.getY();
   int16_t pointZ = p2.getZ() - p1.getZ();
   snprintf(s, sizeof(s), "go %d %d %d %d", pointX, pointY, pointZ, speed);
-  sendCmdGo(Coordinate(p1.getUnit(), pointX, pointY, pointZ), speed, s, callback);
+  sendCmd(s, callback);
 }
 
 void RMTT_Protocol::stop(std::function<void(char *cmd, String res)> callback)
@@ -531,20 +531,4 @@ TickType_t RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, Strin
     callback(cmd, res);
 
   return execTime;
-}
-
-void RMTT_Protocol::sendCmdGo(Coordinate p, uint16_t speed, char *cmd, std::function<void(char *cmd, String res, MoveRelativeRes moverRelativeRes)> callback)
-{
-  TickType_t execTime;
-  execTime = sendCmd(cmd, NULL);
-  if (callback != NULL)
-  {
-    // Serial.printf("Callback is not null, Time : %d ms\n", pdTICKS_TO_MS(execTime));
-    // Serial.printf("Creating res ...\n");
-    // Serial.printf("Points are (%d, %d, %d)\n", p.getX(), p.getY(), p.getZ());
-    MoveRelativeRes moveRelativeRes = MoveRelativeRes(speed, p.getX(), p.getY(), p.getZ(), execTime);
-    // Serial.printf("The speed is %d, the time is %d, the coordinate is (%d, %d, %d)\n", moveRelativeRes.getSpeed(), pdTICKS_TO_MS(moveRelativeRes.getTime()), moveRelativeRes.getX(), moveRelativeRes.getY(), moveRelativeRes.getZ());
-    // Serial.printf("Calling callback ...\n");
-    callback(cmd, "", moveRelativeRes);
-  }
 }
