@@ -466,7 +466,6 @@ TickType_t RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, Strin
   TickType_t xBlockTimeMax((TickType_t)500 / portTICK_PERIOD_MS);
   TickType_t execTime = 0;
   char msg[50];
-  Utils *utils = Utils::getInstance();
   const unsigned long TIMEOUT_DURATION = 20000;
   unsigned long start = millis();
 
@@ -511,7 +510,6 @@ TickType_t RMTT_Protocol::sendCmd(char *cmd, std::function<void(char *cmd, Strin
       continue;
     else
     {
-      utils->slog("TIMEOUT"); // do something
       while (1)
       {
         vTaskDelay(cmdDELAY);

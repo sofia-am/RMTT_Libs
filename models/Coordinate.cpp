@@ -1,6 +1,6 @@
 #include "Coordinate.h"
 
-Coordinate::Coordinate(char *unit, int16_t x, int16_t y, int16_t z)
+Coordinate::Coordinate(const char *unit, int16_t x, int16_t y, int16_t z)
 {
     this->unit = new char[strlen(unit) + 1];
     strcpy(this->unit, unit);
@@ -61,36 +61,38 @@ void Coordinate::toString(char *buffer)
 void Coordinate::printPoints(std::vector<Coordinate> points)
 {
     uint8_t size = points.size();
+
     for (uint8_t i = 0; i < size; i++)
     {
-        char buffer[60];
         Coordinate point = points.at(i);
-        point.toString(buffer);
-        Serial.println(buffer);
+        Serial.printf("(x = %d, y = %d, z = %d, unit = %s)\n",
+                      point.getX(), point.getY(), point.getZ(), point.getUnit());
     }
 }
 
 uint8_t Coordinate::getPointScalar(int16_t xDistance, int16_t yDistance, int16_t zDistance)
 {
     int16_t max = 0, min = 0;
-
-    if (xDistance > max)
+    Serial.printf("xDistance: %d, yDistance: %d, zDistance: %d\n", xDistance, yDistance, zDistance);
+    if (xDistance > MAX_DISTANCE)
         max = xDistance;
-    else if (xDistance < min)
+    else if (xDistance < MIN_DISTANCE)
         min = xDistance;
-    if (yDistance > max)
+    if (yDistance > MAX_DISTANCE)
         max = yDistance;
-    else if (yDistance < min)
+    else if (yDistance < MIN_DISTANCE)
         min = yDistance;
-    if (zDistance > max)
+    if (zDistance > MAX_DISTANCE)
         max = zDistance;
-    else if (zDistance < min)
+    else if (zDistance < MIN_DISTANCE)
         min = zDistance;
 
+    uint8_t maxRes = abs((uint8_t)ceil(max / MAX_DISTANCE));
+    uint8_t minRes = abs((uint8_t)ceil(min / MIN_DISTANCE));
     if (max != 0)
-        return (uint8_t)ceil(max / MAX_DISTANCE);
+        return maxRes < 2 ? 2 : maxRes;
     else if (min != 0)
-        return (uint8_t)ceil(min / MIN_DISTANCE);
+        return minRes < 2 ? 2 : minRes;
     else
-        return 1;
+        return 2;
 }
